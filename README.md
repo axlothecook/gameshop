@@ -1,37 +1,34 @@
-# Gaming Shop
+# Game Shop
+A full-stack demo online gaming store. Browse games, sort, filter and search them, create, view, edit or delete games, genres and developers with image uploads. The project is split across three repositories:
 
-A full-stack gaming-store web app — browse games with filtering, sorting, and
-search, plus admin CRUD for games, genres, and developers (with image uploads).
+### [Front end](https://github.com/axlothecook/Gaming-shop-frontend)	
+The public site whose UI is built with SvelteKit and is rendered on the server. 
 
-**Live:** <https://gameshop.axlothecook.com> — self-hosted on a Raspberry Pi,
-exposed via Cloudflare Tunnel.
+### [Back end](https://github.com/axlothecook/Gaming-Shop)	
+A REST API built with Node.js, Express and MongoDB. Images are stored on Cloudflare R2.
 
-The project is split across three repositories. Pick the one you want to view:
+### [Deploy](https://github.com/axlothecook/gaming-shop-deploy)	
+Holds the config files that run the whole project on my Raspberry Pi: the Docker Compose stack and the Cloudflare Tunnel setup.
+<br />
 
-| Repository | What it is |
-| --- | --- |
-| [**Front end**](https://github.com/axlothecook/Gaming-shop-frontend) | SvelteKit web UI (adapter-node). The user-facing app. |
-| [**Back end**](https://github.com/axlothecook/Gaming-Shop) | Node.js + Express + MongoDB REST API. Image storage on Cloudflare R2. |
-| [**Deploy**](https://github.com/axlothecook/gaming-shop-deploy) | Docker Compose orchestration + Cloudflare Tunnel for the Raspberry Pi deploy. |
 
 ## How it fits together
+I made a graph that shows how the repos connect at runtime. Basically the Cloudflare Tunnel sends visitors straight to the frontend; the frontend talks to the backend server-to-server inside the Docker network. The data is stored in MongoDB as documents, along with links to the R2 images. The backend and the database have no public address.
 
-```
-Browser ─▶ Cloudflare Tunnel ─▶ Frontend (SvelteKit) ─▶ Backend (Express API) ─▶ MongoDB
-                                                              │
-                                                              └─▶ Cloudflare R2 (images.axlothecook.com)
-```
+![image](https://github.com/user-attachments/files/30160010/lana-segovic-cv.pdf)
 
-- The **front end** renders the UI and forwards form actions to the back end.
-- The **back end** owns all data (games/genres/developers) and uploads images to
-  Cloudflare R2, serving them from `images.axlothecook.com`.
-- The **deploy** repo ties everything together with Docker Compose and runs the
-  whole stack (plus MongoDB and `cloudflared`) on a Raspberry Pi. CI builds the
-  images and auto-deploys on push.
+<br />
 
-## Tech stack at a glance
+## Deployment 
+The project is deployed via my [CI/CD pipeline](https://github.com/axlothecook/homelab-ci-cd):
+(1) a push to the frontend runs its tests, 
+(2) CI builds the arm64 image, 
+(3) the Pi pulls it and restarts the stack
 
-- **Front end:** SvelteKit, TypeScript, Vite, Sass
-- **Back end:** Node.js, Express 5, MongoDB, multer, Cloudflare R2 (S3 SDK)
-- **Infra:** Docker / Docker Compose, GitHub Actions (GHCR), Cloudflare Tunnel,
-  Raspberry Pi
+The backend image is build-only, so a backend change goes live with the next stack restart.
+<br />
+
+## Tech stack
+Front end: [SvelteKit](https://svelte.dev/docs/kit), [TypeScript](https://www.typescriptlang.org), [Vite](https://vite.dev), [Vitest](https://vitest.dev), [Sass](https://sass-lang.com) + my own [sass library](https://github.com/axlothecook/axlothecook-sass-library) <br />
+Back end: [Node.js](https://nodejs.org), [Express 5](https://expressjs.com), [MongoDB](https://www.mongodb.com), [multer](https://github.com/expressjs/multer), [express-validator](https://express-validator.github.io), [Cloudflare R2](https://developers.cloudflare.com/r2/) <br />
+Deploy: [Docker Compose](https://docs.docker.com/compose/), [GitHub Actions](https://github.com/features/actions) (GHCR, arm64), [Tailscale](https://tailscale.com) (CI to Pi), [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-tunnel/)
