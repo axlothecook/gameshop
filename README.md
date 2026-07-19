@@ -15,7 +15,7 @@ Holds the config files that run the whole project on my Raspberry Pi: the Docker
 ## How it fits together
 I made a graph that shows how the repos connect at runtime. Basically the Cloudflare Tunnel sends visitors straight to the frontend; the frontend talks to the backend server-to-server inside the Docker network. The data is stored in MongoDB as documents, along with links to the R2 images. The backend and the database have no public address.
 
-![image](https://github.com/user-attachments/files/30160010/lana-segovic-cv.pdf)
+![image](https://github.com/user-attachments/assets/330b07a8-3c07-4475-ac57-d5b354c1d646)
 
 <br />
 
